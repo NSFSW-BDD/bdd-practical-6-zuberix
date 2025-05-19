@@ -49,7 +49,20 @@ var userModel = {
 
     pool.query(SQLSTATMENT, VALUES, callback);
   },
-  
+
+        //authentication
+   loginUser: (data, callback) => {
+
+        const SQLSTATMENT = `select * from user where email=? and password=?`;
+
+        const VALUES = [data.email, data.password];
+
+        pool.query(SQLSTATMENT, VALUES, callback);
+
+    }
 };
 
-module.exports = userModel;
+
+module.exports = userModel
+
+

@@ -83,6 +83,20 @@ var jwtMiddleware = {
     };
     // Verify the token
     jwt.verify(token, secretKey, callback);
+  },
+
+    verifyAdmin: (req, res, next) => {
+
+    if (res.locals.role == "Admin") {
+
+      next();
+
+    }else{
+
+      return res.status(401).json({ error: "Invalid Access Role" });
+
+    }
+
   }
 }
 

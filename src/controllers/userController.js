@@ -5,7 +5,7 @@
 const userModel = require('../models/userModel');
 
 // GET /users
-var readAllUser = (req, res) => {
+var selectAllUser = (req, res) => {
   userModel.selectAllUsers((err, results) => {
     if (err) {
       console.error('Error fetching users:', err);
@@ -90,13 +90,62 @@ var deleteUserById = (req, res) => {
   });
 };
 
+var loginUser= (req, res, next) => {
+
+    const data = {
+
+      email: req.body.email,
+
+      password: req.body.password
+
+    };
+
+    const callback = (error, results, fields) => {
+
+      if (error) {
+
+        console.error("Error Login:", error);
+
+        res.status(500).json(error);
+
+      } else {
+
+        if (results.length == 0) {//no match 
+
+          res.status(404).json({
+
+            message: "email/password wrong",
+
+          });
+
+        } else { //match email and password
+
+          res.locals.userid = results[0].userid;//saves userid from database in res.locals for use in jwt payload
+
+          res.locals.role = results[0].role;  //saves role from database in res.locals for use in jwt payload
+
+          next(); //call next middleware to issue token
+
+        }
+
+      }
+
+    };
+
+    userModel.loginUser(data, callback);
+
+  }
+
 // Export all functions at the end
 module.exports = {
-  readAllUser,
+  selectAllUser,
   createNewUser,
   readUserById,
   updateUserById,
-  deleteUserById
+  deleteUserById,
+  loginUser
 };
+
+
 
 
